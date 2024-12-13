@@ -3,23 +3,8 @@ using CongestionTaxCalculator.enums;
 using CongestionTaxCalculator.services.Interfaces;
 namespace CongestionTaxCalculator.services
 {
-    public class CalculateCongestionTax: ICalculateCongestionTax
-    {
-        /**
-             * Calculate the total toll fee for one day
-             *
-             * @param vehicle - the vehicle
-             * @param dates   - date and time of all passes on one day
-             * @return - the total congestion tax for that day
-             */
-
-
-
-        /*
-         NOTE: The logic of iterating on the dates in GetTax() method was not making sense so I wrote my own.
-         NOTE: optimized code in IsTollFreeVehicle()
-         NOTE: Old Logic in GetTollFee() is fixed and now it is using the data from the database.
-         */
+    public class CalculateCongestionTax : ICalculateCongestionTax
+    {        
         //Scenario 1: A car passing a toll at 7:00:00 and then at 7:59:59 will be considered as inside the 1 hour time period and highest toll amount will be considered.
         //Scenario 2: A car passing a toll at 7:00:00 and then at 8:00:00 will be considered as outside the 1 hour time period and toll will be added for both the time period.
         private readonly CongestionTaxContext _context;
@@ -31,38 +16,37 @@ namespace CongestionTaxCalculator.services
         {
             try
             {
+                if (IsTollFreeVehicle(vehicle))
+                    return 0;
 
-            if (IsTollFreeVehicle(vehicle))
-                return 0;
-
-            DateTime intervalStart = dates[0];
-            int totalFee = 0;
-            int highestFeeInInterval = 0;
-            foreach (DateTime date in dates)
-            {
-                int nextFee = GetTollFee(date);
-                long minutes = (long)(date - intervalStart).TotalMinutes;
-                
-                if (minutes < 60)
+                DateTime intervalStart = dates[0];
+                int totalFee = 0;
+                int highestFeeInInterval = 0;
+                foreach (DateTime date in dates)
                 {
-                    if (nextFee > highestFeeInInterval)
+                    int nextFee = GetTollFee(date);
+                    long minutes = (long)(date - intervalStart).TotalMinutes;
+
+                    if (minutes < 60)
                     {
+                        if (nextFee > highestFeeInInterval)
+                        {
+                            highestFeeInInterval = nextFee;
+                        }
+                    }
+                    else
+                    {
+                        totalFee += highestFeeInInterval;
+                        intervalStart = date;
                         highestFeeInInterval = nextFee;
                     }
                 }
-                else
-                {
-                    totalFee += highestFeeInInterval;
-                    intervalStart = date;
-                    highestFeeInInterval = nextFee;
-                }
-            }
 
-            // Add fee for last interval
-            totalFee += highestFeeInInterval;
+                // Add fee for last interval
+                totalFee += highestFeeInInterval;
 
-            if (totalFee > 60) totalFee = 60;
-            return totalFee;
+                if (totalFee > 60) totalFee = 60;
+                return totalFee;
 
             }
             catch (Exception e)
