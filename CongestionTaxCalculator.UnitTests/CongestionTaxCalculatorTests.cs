@@ -1,6 +1,6 @@
 using CongestionTaxCalculator.DataAccess.Dto;
 using CongestionTaxCalculator.DataAccess.Models.Contexts;
-using CongestionTaxCalculator.enums;
+using CongestionTaxCalculator.Enums;
 using CongestionTaxCalculator.services;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,8 +8,6 @@ namespace CongestionTaxCalculator.UnitTests
 {
     public class CongestionTaxCalculatorTests
     {
-
-
         private DbContextOptions<CongestionTaxContext> GetInMemoryDbContextOptions()
         {
             return new DbContextOptionsBuilder<CongestionTaxContext>()

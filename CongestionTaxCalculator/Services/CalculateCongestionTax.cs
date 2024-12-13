@@ -1,5 +1,5 @@
 ﻿using CongestionTaxCalculator.DataAccess.Models.Contexts;
-using CongestionTaxCalculator.enums;
+using CongestionTaxCalculator.Enums;
 using CongestionTaxCalculator.services.Interfaces;
 namespace CongestionTaxCalculator.services
 {
@@ -79,7 +79,7 @@ namespace CongestionTaxCalculator.services
             int minute = date.Minute;
 
 
-            #region TollFees
+            #region TollFees from Database
 
             var tollFeeHours = _context.TollFeeHours.ToList();
 
@@ -139,14 +139,5 @@ namespace CongestionTaxCalculator.services
             return false;
         }
 
-        private enum TollFreeVehicles
-        {
-            Motorcycle = 0,
-            Tractor = 1,
-            Emergency = 2,
-            Diplomat = 3,
-            Foreign = 4,
-            Military = 5
-        }
     }
 }

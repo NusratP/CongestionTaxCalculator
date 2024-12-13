@@ -1,4 +1,4 @@
-﻿namespace CongestionTaxCalculator.enums
+﻿namespace CongestionTaxCalculator.Enums
 {
     public enum VehicleTypes
     {
@@ -13,4 +13,5 @@
         Bus = 8,
         Others = 9
     }
+
 }

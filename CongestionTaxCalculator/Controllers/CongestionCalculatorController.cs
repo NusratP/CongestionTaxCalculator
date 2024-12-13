@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using CongestionTaxCalculator.enums;
+using CongestionTaxCalculator.Enums;
 using CongestionTaxCalculator.services.Interfaces;
 
 namespace CongestionTaxCalculator.Controllers
@@ -20,18 +20,26 @@ namespace CongestionTaxCalculator.Controllers
         [Route("api/calculateTax/{vehicle}")]
         public Task<int> CalculateTax(string vehicle, [FromBody] DateTime[] dates)
         {
-            //Validation
-            if (dates.Any(date => date < DateTime.Parse("2013-01-01") || date >= DateTime.Parse("2014-01-01")))
+            try
             {
-                throw new Exception("Congestion tax calculation is only done for the year 2013!");
-            }
-            if (!Enum.TryParse(vehicle, true, out VehicleTypes vehicleType))
-            {
-                throw new Exception("Invalid vehicle type!");
-            }
+                if (dates.Any(date => date < DateTime.Parse("2013-01-01") || date >= DateTime.Parse("2014-01-01")))
+                {
+                    throw new Exception("Congestion tax calculation is only done for the year 2013!");
+                }
+                if (!Enum.TryParse(vehicle, true, out VehicleTypes vehicleType))
+                {
+                    throw new Exception("Invalid vehicle type!");
+                }
 
-            var result = _calculateCongestionTax.GetTax(vehicleType, dates);
-            return Task.FromResult(result);
+                var result = _calculateCongestionTax.GetTax(vehicleType, dates);
+                return Task.FromResult(result);
+            }
+            catch (Exception ex)
+            {
+                //TODO: logging
+                Console.WriteLine(ex);
+                throw;
+            } 
         }
     }
 }

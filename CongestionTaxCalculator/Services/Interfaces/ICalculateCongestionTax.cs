@@ -1,4 +1,4 @@
-﻿using CongestionTaxCalculator.enums;
+﻿using CongestionTaxCalculator.Enums;
 
 namespace CongestionTaxCalculator.services.Interfaces
 {
